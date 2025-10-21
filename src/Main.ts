@@ -1,8 +1,9 @@
-import * as Plugin from "iitcpluginkit"
+import * as Plugin from 'iitcpluginkit'
 import Portal = IITC.Portal
 import {DialogHelper} from './DialogHelper'
-import {IitcHelper} from "./IitcHelper"
-import {InventoryHelper} from "./InventoryHelper"
+import {IitcHelper} from './IitcHelper'
+import {InventoryHelper} from './InventoryHelper'
+import {ExportHelper} from './ExportHelper'
 import './types/Types.ts'
 
 class ExportPortals implements Plugin.Class {
@@ -13,10 +14,10 @@ class ExportPortals implements Plugin.Class {
     private dialogHelper: DialogHelper
     private iitcHelper: IitcHelper
     private inventoryHelper: InventoryHelper
+    private exportHelper: ExportHelper
 
     init() {
         console.log(`ExportPortals ${VERSION}`)
-
 
         // eslint-disable-next-line @typescript-eslint/no-require-imports
         require('./styles.css')
@@ -24,6 +25,7 @@ class ExportPortals implements Plugin.Class {
         this.dialogHelper = new DialogHelper()
         this.iitcHelper = new IitcHelper()
         this.inventoryHelper = new InventoryHelper()
+        this.exportHelper = new ExportHelper()
 
         this.createButtons()
     }
@@ -77,37 +79,9 @@ class ExportPortals implements Plugin.Class {
             return
         }
 
-        const exported = []
+        const exportString = this.exportHelper.exportPortals(portals, this.exportFormat)
 
-        for (const portal of portals) {
-            const data = portal.options.data
-
-            exported.push({
-                guid: portal.options.guid,
-                title: data.title,
-                lat: data.latE6 / 1e6,
-                lng: data.lngE6 / 1e6,
-                level: data.level,
-                team: data.team,
-                health: data.health,
-                resCount: data.resCount,
-                timestamp: Date.now()
-            })
-        }
-
-        let exportString = ''
-
-        switch (this.exportFormat) {
-            case 'json':
-                exportString = JSON.stringify(exported, undefined, 2)
-                break
-
-            default:
-                alert(`Unsupported exportFormat ${this.exportFormat}`)
-                return
-        }
-
-        $("#kukuXportOutput").val(exportString)
+        $('#ExportPortalsOutput').val(exportString)
     }
 }
 
