@@ -1,0 +1,25 @@
+<div id="{{prefix}}Container">
+    <p>hello {{foo}} content</p>
+
+    Selection Mode:
+    <select onchange="{{plugin}}.switchMode(this.value)">
+        <option value="view">View</option>
+        <option value="polygon">Polygon(s)</option>
+    </select>
+
+    Format:
+    <select onchange="{{plugin}}.switchFormat(this.value)">
+        <option value="json">JSON</option>
+    </select>
+
+    <br>
+
+    <button onclick="{{plugin}}.doExport()">Export</button>
+
+    <div id="{{prefix}}Status"></div>
+
+    <br>
+
+    <textarea id="{{prefix}}Output" cols="80" rows="5" style="width: 100%; white-space: nowrap;"></textarea>
+
+</div>
