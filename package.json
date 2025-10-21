@@ -1,10 +1,7 @@
 {
   "dependencies": {
-    "ejs": "^3.1.10",
-    "fs": "^0.0.1-security",
     "handlebars": "^4.7.8",
-    "iitcpluginkit": "^1.9.6",
-    "path": "^0.12.7"
+    "iitcpluginkit": "^1.9.6"
   },
   "license": "Unlicense",
   "type": "module",
@@ -17,7 +14,6 @@
   },
   "devDependencies": {
     "@eslint/js": "^9.37.0",
-    "@types/ejs": "^3.1.5",
     "eslint": "^9.37.0",
     "eslint-plugin-prefer-arrow-functions": "^3.9.1",
     "eslint-plugin-unicorn": "^61.0.2",
