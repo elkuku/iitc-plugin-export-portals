@@ -1,4 +1,5 @@
 <div id="{{prefix}}Container">
+
     <label>
         Selection Mode:
         <select onchange="{{plugin}}.switchMode(this.value)">
@@ -12,7 +13,7 @@
         Format:
         <select onchange="{{plugin}}.switchFormat(this.value)">
             {{#each formatOptions}}
-                <option value="{{key}}">{{value}}</option>
+                <option value="{{@key}}">{{this}}</option>
             {{/each}}
         </select>
     </label>
