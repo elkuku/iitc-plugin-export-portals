@@ -2,18 +2,18 @@
     <label>
         Selection Mode:
         <select onchange="{{plugin}}.switchMode(this.value)">
-            {{#eachInMap selectOptions}}
-                <option value="{{key}}">{{value}}</option>
-            {{/eachInMap}}
+            {{#each selectOptions}}
+                <option value="{{@key}}">{{this}}</option>
+            {{/each}}
         </select>
     </label>
 
     <label>
         Format:
         <select onchange="{{plugin}}.switchFormat(this.value)">
-            {{#eachInMap formatOptions}}
+            {{#each formatOptions}}
                 <option value="{{key}}">{{value}}</option>
-            {{/eachInMap}}
+            {{/each}}
         </select>
     </label>
 
