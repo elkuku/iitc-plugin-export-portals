@@ -16,6 +16,8 @@ class ExportPortals implements Plugin.Class {
     private inventoryHelper: InventoryHelper
     private exportHelper: ExportHelper
 
+    private dialog: JQuery | undefined
+
     init() {
         console.log(`ExportPortals ${VERSION}`)
 
@@ -40,7 +42,12 @@ class ExportPortals implements Plugin.Class {
     }
 
     private showDialog(): void {
-        this.dialogHelper.getDialog()
+        if (!this.dialog) {
+            this.dialog = this.dialogHelper.getDialog()
+            this.dialog.on('dialogclose', () => {
+                this.dialog = undefined
+            })
+        }
     }
 
     public switchMode(mode: string): void {
