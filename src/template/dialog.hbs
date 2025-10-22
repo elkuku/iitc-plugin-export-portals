@@ -1,16 +1,21 @@
 <div id="{{prefix}}Container">
-    <p>hello {{foo}} content</p>
+    <label>
+        Selection Mode:
+        <select onchange="{{plugin}}.switchMode(this.value)">
+            {{#eachInMap selectOptions}}
+                <option value="{{key}}">{{value}}</option>
+            {{/eachInMap}}
+        </select>
+    </label>
 
-    Selection Mode:
-    <select onchange="{{plugin}}.switchMode(this.value)">
-        <option value="view">View</option>
-        <option value="polygon">Polygon(s)</option>
-    </select>
-
-    Format:
-    <select onchange="{{plugin}}.switchFormat(this.value)">
-        <option value="json">JSON</option>
-    </select>
+    <label>
+        Format:
+        <select onchange="{{plugin}}.switchFormat(this.value)">
+            {{#eachInMap formatOptions}}
+                <option value="{{key}}">{{value}}</option>
+            {{/eachInMap}}
+        </select>
+    </label>
 
     <br>
 
@@ -20,6 +25,9 @@
 
     <br>
 
-    <textarea id="{{prefix}}Output" cols="80" rows="5" style="width: 100%; white-space: nowrap;"></textarea>
+    <label>
+        Output
+        <textarea id="{{prefix}}Output" cols="80" rows="5" style="width: 100%; white-space: nowrap;"></textarea>
+    </label>
 
 </div>
