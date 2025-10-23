@@ -1,6 +1,4 @@
-import {Inventory} from "./types/Types"
-import KeyCapsuleItem = Inventory.KeyCapsuleItem;
-import Key = Inventory.Key;
+import {Inventory, KeyInfo} from "./types/Types"
 
 export class InventoryHelper {
     public async getInventory() {
@@ -108,28 +106,73 @@ export class InventoryHelper {
                         break
                 }
             }
-
-            return inventory
         } catch (error) {
             const element = document.getElementById('iitc-inventory-content')
             const message: string = error.message ?? error
-            if (element) element.innerHTML = `<div style="color:crimson">Error: ${message}</div>`
+            if (element) element.innerHTML = `<div style="color:red">Error: ${message}</div>`
+            console.error(message)
         }
 
         return inventory
     }
 
-    private listKeysInCapsule(items: any): KeyCapsuleItem[] {
+    public getKeysInfo(items: Inventory.Items) {
+        const keyInfos = new Map<string, KeyInfo>()
+
+        for (const item of items.keys) {
+            let keyInfo: KeyInfo | undefined
+
+            keyInfo = keyInfos.get(item.guid)
+
+            keyInfo ??= {
+                totalCount: 0,
+                atHand: 0,
+                capsules: {},
+            }
+
+            keyInfo.atHand++
+
+            for (const capsule of items.keyCapsules) {
+                for(const key of capsule.keys) {
+                    if (key.key.guid === item.guid) {
+                        keyInfo.capsules[capsule.differentiator] = key.count
+                    }
+                }
+            }
+
+            keyInfos.set(item.guid, keyInfo)
+        }
+
+        for (const [guid, keyinfo] of keyInfos) {
+            console.log(guid)
+            let total = 0
+            total += keyinfo.atHand
+
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+            for (const [key, value] of Object.entries(keyinfo.capsules)) {
+                console.log(key)
+                // @ts-expect-error 'llllllllllL'
+                // eslint-disable-next-line @typescript-eslint/restrict-plus-operands
+                total += value
+            }
+
+            keyinfo.totalCount = total
+        }
+
+        return keyInfos
+    }
+
+    private listKeysInCapsule(items: any): Inventory.KeyCapsuleItem[] {
         const keys = []
         for (const capsuleItem of items) {
             const coupler = capsuleItem.exampleGameEntity[2].portalCoupler
 
             const guid = coupler.portalGuid
-            const key: Key = {
+            const key: Inventory.Key = {
                 guid: guid,
                 title: coupler.portalTitle,
             }
-            const item: KeyCapsuleItem = {
+            const item: Inventory.KeyCapsuleItem = {
                 key: key,
                 count: capsuleItem.itemGuids.length,
             }

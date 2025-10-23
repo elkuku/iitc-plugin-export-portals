@@ -1,12 +1,36 @@
+import {IitcHelper} from './IitcHelper'
+import {InventoryHelper} from './InventoryHelper'
+
+import {ExportObject, ExportOptions} from './types/Types'
+
 export class ExportHelper {
 
-    exportPortals(portals: IITC.Portal[], exportFormat: string) {
+    private iitcHelper: IitcHelper
+    private inventoryHelper: InventoryHelper
+
+    constructor() {
+        this.iitcHelper = new IitcHelper()
+        this.inventoryHelper = new InventoryHelper()
+    }
+
+    async exportPortals(options: ExportOptions) {
+
+        const portals = this.findPortals(options.selectionMode)
+        let keyInfo
+
+        if (options.exportUserData) {
+            const inventory = await this.inventoryHelper.getInventory()
+
+            keyInfo = this.inventoryHelper.getKeysInfo(inventory)
+        }
+
         const exported = []
 
         for (const portal of portals) {
             const data = portal.options.data
 
-            exported.push({
+            // todo define what to export
+            const exportObject: ExportObject = {
                 guid: portal.options.guid,
                 title: data.title,
                 lat: data.latE6 / 1e6,
@@ -15,21 +39,50 @@ export class ExportHelper {
                 team: data.team,
                 health: data.health,
                 resCount: data.resCount,
-                timestamp: Date.now()
-            })
+                timestamp: Date.now(),
+            }
+
+            if (options.exportUserData && keyInfo) {
+                exportObject.keyInfo = keyInfo.get(portal.options.guid)
+                console.info(exportObject.keyInfo)
+            }
+
+            exported.push(exportObject)
         }
+
+        console.info(exported)
 
         let exportString = ''
 
-        switch (exportFormat) {
+        // todo add more formats
+        switch (options.format) {
             case 'json':
                 exportString = JSON.stringify(exported, undefined, 2)
                 break
 
             default:
-                alert(`Unsupported exportFormat ${exportFormat}`)
+                throw new Error(`Unsupported format ${options.format}`)
         }
 
         return exportString
+    }
+
+    private findPortals(method: string) {
+        let portals: IITC.Portal[] = []
+
+        switch (method) {
+            case 'view':
+                portals = this.iitcHelper.findViewPortals()
+                break
+            case 'polygon':
+                portals = this.iitcHelper.findPolygonPortals()
+                break
+            default:
+                throw new Error(`Unsupported method: ${method}`)
+        }
+
+        if (portals.length === 0) throw new Error('No Portals found.')
+
+        return portals
     }
 }

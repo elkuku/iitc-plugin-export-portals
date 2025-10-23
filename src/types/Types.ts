@@ -38,3 +38,28 @@ export namespace Inventory {
         keys: KeyCapsuleItem[]
     }
 }
+
+export interface KeyInfo {
+    totalCount: number,
+    atHand: number,
+    capsules: any,
+}
+
+export interface ExportObject {
+    guid: string,
+    title: string,
+    lat: number,
+    lng: number,
+    level: number,
+    team: string,
+    health: number,
+    resCount: number,
+    timestamp: number,
+    keyInfo?: KeyInfo
+}
+
+export interface ExportOptions {
+    selectionMode: string,
+    format: string,
+    exportUserData: boolean,
+}

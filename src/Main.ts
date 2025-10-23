@@ -1,9 +1,8 @@
 import * as Plugin from 'iitcpluginkit'
-import Portal = IITC.Portal
+
 import {DialogHelper} from './DialogHelper'
-import {IitcHelper} from './IitcHelper'
-import {InventoryHelper} from './InventoryHelper'
 import {ExportHelper} from './ExportHelper'
+
 import './types/Types.ts'
 
 class ExportPortals implements Plugin.Class {
@@ -12,8 +11,6 @@ class ExportPortals implements Plugin.Class {
     private exportFormat: string = 'json'
 
     private dialogHelper: DialogHelper
-    private iitcHelper: IitcHelper
-    private inventoryHelper: InventoryHelper
     private exportHelper: ExportHelper
 
     private dialog: JQuery | undefined
@@ -25,8 +22,6 @@ class ExportPortals implements Plugin.Class {
         require('./styles.css')
 
         this.dialogHelper = new DialogHelper()
-        this.iitcHelper = new IitcHelper()
-        this.inventoryHelper = new InventoryHelper()
         this.exportHelper = new ExportHelper()
 
         this.createButtons()
@@ -59,36 +54,26 @@ class ExportPortals implements Plugin.Class {
     }
 
     public async doExport(): Promise<void> {
-        let portals: Portal[] = []
+        const exportUserData = true
+        let exportString = ''
 
-        const inventory = await this.inventoryHelper.getInventory()
+        try {
+            exportString = await this.exportHelper.exportPortals({
+                selectionMode: this.selectionMode,
+                format: this.exportFormat,
+                exportUserData: exportUserData,
+            })
+        } catch (error) {
+            console.error(error)
+        }
+        // @ts-expect-error 'we expect a form element...'
+        const output: HTMLFormElement | null = document.getElementById('ExportPortalsOutput')
 
-        console.log(inventory)
-
-        console.log(this.selectionMode, this.exportFormat)
-
-        switch (this.selectionMode) {
-            case 'view':
-                portals = this.iitcHelper.findViewPortals()
-                break
-            case 'polygon':
-                portals = this.iitcHelper.findPolygonPortals()
-                break
-            default:
-                alert(`Unsupported mode: ${this.selectionMode}`)
-
-                return
+        if (null !== output) {
+            output.value = 'AHA' + exportString
         }
 
-        if (portals.length === 0) {
-            alert('No Portals found.')
-
-            return
-        }
-
-        const exportString = this.exportHelper.exportPortals(portals, this.exportFormat)
-
-        $('#ExportPortalsOutput').val(exportString)
+        // $('#ExportPortalsOutput').val(exportString)
     }
 }
 

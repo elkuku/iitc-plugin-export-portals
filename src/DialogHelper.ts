@@ -24,6 +24,7 @@ export class DialogHelper {
         }
 
         const dialog = window.dialog({
+            id: 'ExportPortals',
             title: 'Export',
             html: template(data),
         }).parent()
