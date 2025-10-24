@@ -135,7 +135,6 @@ export class InventoryHelper {
 
             for (const capsule of inventory.keyCapsules) {
                 if (!(keyInfo.capsules.has(capsule.differentiator))) {
-              //  if (!(Object.prototype.hasOwnProperty.call(keyInfo.capsules, capsule.differentiator))) {
                     for (const k of capsule.keys) {
                         if (k.key.guid === key.guid) {
                             keyInfo.capsules.set(capsule.differentiator, k.count)
@@ -154,13 +153,12 @@ export class InventoryHelper {
                 if (keyInfos.has(k.key.guid)) {
                     keyInfo = keyInfos.get(k.key.guid)
                     if (false === keyInfo?.capsules.has(capsule.differentiator)) {
-                    //if (false === (keyInfo?.capsules.hasOwnProperty(capsule.differentiator))) {
                         keyInfo.capsules.set(capsule.differentiator, k.count)
                         keyInfo.totalCount += k.count
 
                         keyInfos.set(k.key.guid, keyInfo)
                     }
-                }else{
+                } else {
                     keyInfo = {
                         totalCount: 0,
                         atHand: 0,
