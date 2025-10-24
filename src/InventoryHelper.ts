@@ -116,47 +116,63 @@ export class InventoryHelper {
         return inventory
     }
 
-    public getKeysInfo(items: Inventory.Items) {
+    public getKeysInfo(inventory: Inventory.Items) {
         const keyInfos = new Map<string, KeyInfo>()
+        let keyInfo: KeyInfo | undefined
 
-        for (const item of items.keys) {
-            let keyInfo: KeyInfo | undefined
+        for (const key of inventory.keys) {
 
-            keyInfo = keyInfos.get(item.guid)
+            keyInfo = keyInfos.get(key.guid)
 
             keyInfo ??= {
                 totalCount: 0,
                 atHand: 0,
-                capsules: {},
+                capsules: new Map<string, number>(),
             }
 
             keyInfo.atHand++
+            keyInfo.totalCount++
 
-            for (const capsule of items.keyCapsules) {
-                for(const key of capsule.keys) {
-                    if (key.key.guid === item.guid) {
-                        keyInfo.capsules[capsule.differentiator] = key.count
+            for (const capsule of inventory.keyCapsules) {
+                if (!(keyInfo.capsules.has(capsule.differentiator))) {
+              //  if (!(Object.prototype.hasOwnProperty.call(keyInfo.capsules, capsule.differentiator))) {
+                    for (const k of capsule.keys) {
+                        if (k.key.guid === key.guid) {
+                            keyInfo.capsules.set(capsule.differentiator, k.count)
+                            keyInfo.totalCount += k.count
+                        }
                     }
                 }
             }
 
-            keyInfos.set(item.guid, keyInfo)
+            keyInfos.set(key.guid, keyInfo)
         }
 
-        for (const [guid, keyinfo] of keyInfos) {
-            console.log(guid)
-            let total = 0
-            total += keyinfo.atHand
+        // Search for keys only in capsules
+        for (const capsule of inventory.keyCapsules) {
+            for (const k of capsule.keys) {
+                if (keyInfos.has(k.key.guid)) {
+                    keyInfo = keyInfos.get(k.key.guid)
+                    if (false === keyInfo?.capsules.has(capsule.differentiator)) {
+                    //if (false === (keyInfo?.capsules.hasOwnProperty(capsule.differentiator))) {
+                        keyInfo.capsules.set(capsule.differentiator, k.count)
+                        keyInfo.totalCount += k.count
 
-            // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
-            for (const [key, value] of Object.entries(keyinfo.capsules)) {
-                console.log(key)
-                // @ts-expect-error 'llllllllllL'
-                // eslint-disable-next-line @typescript-eslint/restrict-plus-operands
-                total += value
+                        keyInfos.set(k.key.guid, keyInfo)
+                    }
+                }else{
+                    keyInfo = {
+                        totalCount: 0,
+                        atHand: 0,
+                        capsules: new Map<string, number>(),
+                    }
+
+                    keyInfo.capsules.set(capsule.differentiator, k.count)
+                    keyInfo.totalCount += k.count
+
+                    keyInfos.set(k.key.guid, keyInfo)
+                }
             }
-
-            keyinfo.totalCount = total
         }
 
         return keyInfos
@@ -166,7 +182,6 @@ export class InventoryHelper {
         const keys = []
         for (const capsuleItem of items) {
             const coupler = capsuleItem.exampleGameEntity[2].portalCoupler
-
             const guid = coupler.portalGuid
             const key: Inventory.Key = {
                 guid: guid,

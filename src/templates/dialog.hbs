@@ -9,6 +9,23 @@
         </select>
     </label>
 
+    <br>
+
+    Export Fields:
+    {{#each fieldOptions}}
+        <label>
+            {{this}}
+            <input
+                    type="checkbox"
+                    value="{{@key}}"
+                    name="chkFields"
+                {{#if_eq @key 'guid'}}checked="checked" onclick="return false;"{{/if_eq}}
+            ></input>
+        </label>
+    {{/each}}
+
+    <br>
+
     <label>
         Format:
         <select onchange="{{plugin}}.switchFormat(this.value)">
@@ -28,7 +45,7 @@
 
     <label>
         Output
-        <textarea id="{{prefix}}Output" cols="80" rows="5" style="width: 100%; white-space: nowrap;"></textarea>
+        <textarea id="{{prefix}}Output" cols="80" rows="20" style="width: 100%; white-space: nowrap;"></textarea>
     </label>
 
 </div>

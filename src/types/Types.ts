@@ -42,7 +42,7 @@ export namespace Inventory {
 export interface KeyInfo {
     totalCount: number,
     atHand: number,
-    capsules: any,
+    capsules: Map<string, number>
 }
 
 export interface ExportObject {

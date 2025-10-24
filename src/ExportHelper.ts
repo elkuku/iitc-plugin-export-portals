@@ -44,7 +44,6 @@ export class ExportHelper {
 
             if (options.exportUserData && keyInfo) {
                 exportObject.keyInfo = keyInfo.get(portal.options.guid)
-                console.info(exportObject.keyInfo)
             }
 
             exported.push(exportObject)
@@ -57,7 +56,7 @@ export class ExportHelper {
         // todo add more formats
         switch (options.format) {
             case 'json':
-                exportString = JSON.stringify(exported, undefined, 2)
+                exportString = JSON.stringify(exported, this.replacer, 2)
                 break
 
             default:
@@ -84,5 +83,10 @@ export class ExportHelper {
         if (portals.length === 0) throw new Error('No Portals found.')
 
         return portals
+    }
+
+    private replacer(key: any, value: any[]|Map<any, any>) {
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-return
+        return value instanceof Map ? Object.fromEntries(value) : value
     }
 }

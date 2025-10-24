@@ -5,10 +5,12 @@ import {ExportHelper} from './ExportHelper'
 
 import './types/Types.ts'
 
+const PLUGIN_NAME = 'ExportPortals'
+
 class ExportPortals implements Plugin.Class {
 
-    private selectionMode: string = 'view'
-    private exportFormat: string = 'json'
+    private selectionMode: string
+    private exportFormat = 'json'
 
     private dialogHelper: DialogHelper
     private exportHelper: ExportHelper
@@ -16,7 +18,7 @@ class ExportPortals implements Plugin.Class {
     private dialog: JQuery | undefined
 
     init() {
-        console.log(`ExportPortals ${VERSION}`)
+        console.log(`${PLUGIN_NAME} ${VERSION}`)
 
         // eslint-disable-next-line @typescript-eslint/no-require-imports
         require('./styles.css')
@@ -54,8 +56,14 @@ class ExportPortals implements Plugin.Class {
     }
 
     public async doExport(): Promise<void> {
+        if (!this.selectionMode) {
+            alert('Please select a selection mode')
+
+            return
+        }
+
         const exportUserData = true
-        let exportString = ''
+        let exportString: string
 
         try {
             exportString = await this.exportHelper.exportPortals({
@@ -64,19 +72,17 @@ class ExportPortals implements Plugin.Class {
                 exportUserData: exportUserData,
             })
         } catch (error) {
+            // todo some status container
             console.error(error)
-        }
-        // @ts-expect-error 'we expect a form element...'
-        const output: HTMLFormElement | null = document.getElementById('ExportPortalsOutput')
-
-        if (null !== output) {
-            output.value = 'AHA' + exportString
+            exportString = error.message
         }
 
-        // $('#ExportPortalsOutput').val(exportString)
+        const output = document.getElementById(PLUGIN_NAME + 'Output') as HTMLFormElement
+
+        output.value = exportString
     }
 }
 
 export const main = new ExportPortals()
 
-Plugin.Register(main, 'ExportPortals')
+Plugin.Register(main, PLUGIN_NAME)
