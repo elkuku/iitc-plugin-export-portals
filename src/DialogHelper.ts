@@ -90,4 +90,18 @@ export class DialogHelper {
 
         return options
     }
+
+    public confirmStep(step: string) {
+        console.log('Dialog - step', step)
+
+        const containers = ['Select-Portals', 'Select-Fields', 'Select-Format', 'Output']
+
+        for (const container of containers) {
+            const element = document.getElementById(`${this.pluginName}-${container}-Container`)!
+            element.classList.add('hidden')
+        }
+
+        const element1 = document.getElementById(`${this.pluginName}-${step}-Container`)!
+        element1.classList.remove('hidden')
+    }
 }

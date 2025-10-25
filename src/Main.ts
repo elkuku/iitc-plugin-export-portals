@@ -57,6 +57,11 @@ class ExportPortals implements Plugin.Class {
         this.exportFormat = format
     }
 
+    public confirmStep(step:string) {
+        console.log('Main - step', step)
+        this.dialogHelper.confirmStep(step)
+    }
+
     public async doExport(): Promise<void> {
         if (!this.selectionMode) {
             alert('Please select a selection mode')

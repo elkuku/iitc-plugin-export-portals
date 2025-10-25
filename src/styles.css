@@ -1,3 +1,7 @@
-textarea#ExportPortalsOutput{
+textarea#ExportPortalsOutput {
     font-family: monospace;
+}
+
+.hidden {
+    display: none;
 }
