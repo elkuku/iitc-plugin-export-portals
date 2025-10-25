@@ -15,12 +15,11 @@
     {{#each fieldOptions}}
         <label>
             {{this}}
-            <input
-                    type="checkbox"
-                    value="{{@key}}"
-                    name="chkFields"
-                {{#if_eq @key 'guid'}}checked="checked" onclick="return false;"{{/if_eq}}
-            ></input>
+            <input type="checkbox" value="{{@key}}" name="chkFields"
+                {{#if_eq @key 'guid'}}
+                   onclick="return false;" checked="checked"
+                {{/if_eq}}
+            />
         </label>
     {{/each}}
 

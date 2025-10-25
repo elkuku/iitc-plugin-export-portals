@@ -10,6 +10,10 @@ Handlebars.registerHelper('if_eq', function (argument1, argument2, options) {
 })
 
 export class DialogHelper {
+    public constructor(
+        private pluginName: string
+    ) {}
+
     public getDialog(): JQuery {
         const template: HandlebarsTemplateDelegate = Handlebars.compile(dialogTemplate)
 
@@ -33,19 +37,20 @@ export class DialogHelper {
             health: 'Health',
             resCount: 'Resonator Count',
             timestamp: 'Timestamp',
-            keyData: 'Keys',
+            keys: 'Keys',
+            keyData: 'Key Data',
         }
 
         const data = {
-            plugin: 'window.plugin.ExportPortals',
-            prefix: 'ExportPortals',
+            plugin: 'window.plugin.' + this.pluginName,
+            prefix: this.pluginName,
             selectOptions: selectOptions,
             formatOptions: formatOptions,
             fieldOptions: fieldOptions,
         }
 
         const dialog = window.dialog({
-            id: 'ExportPortals',
+            id: this.pluginName,
             title: 'Export',
             html: template(data),
         }).parent()
@@ -62,5 +67,27 @@ export class DialogHelper {
             .css('left', (windowWidth - dialogWidth) / 2)
 
         return dialog
+    }
+
+    public findFieldOptions(): string[] {
+        const options = []
+        const parentElement = document.getElementById(this.pluginName + 'Container')
+
+        if (!parentElement) {
+            console.error('findFieldOptions: parentElement not found')
+
+            return []
+        }
+
+        const checkboxes: NodeListOf<HTMLInputElement> =
+            parentElement.querySelectorAll('input[type="checkbox"][name="chkFields"]')
+
+        for (const checkbox of checkboxes) {
+            if (checkbox.checked) {
+                options.push(checkbox.value)
+            }
+        }
+
+        return options
     }
 }

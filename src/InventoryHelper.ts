@@ -125,20 +125,20 @@ export class InventoryHelper {
             keyInfo = keyInfos.get(key.guid)
 
             keyInfo ??= {
-                totalCount: 0,
+                total: 0,
                 atHand: 0,
                 capsules: new Map<string, number>(),
             }
 
-            keyInfo.atHand++
-            keyInfo.totalCount++
+            keyInfo.atHand!++
+            keyInfo.total++
 
             for (const capsule of inventory.keyCapsules) {
-                if (!(keyInfo.capsules.has(capsule.differentiator))) {
+                if (!(keyInfo.capsules?.has(capsule.differentiator))) {
                     for (const k of capsule.keys) {
                         if (k.key.guid === key.guid) {
-                            keyInfo.capsules.set(capsule.differentiator, k.count)
-                            keyInfo.totalCount += k.count
+                            keyInfo.capsules!.set(capsule.differentiator, k.count)
+                            keyInfo.total += k.count
                         }
                     }
                 }
@@ -152,21 +152,20 @@ export class InventoryHelper {
             for (const k of capsule.keys) {
                 if (keyInfos.has(k.key.guid)) {
                     keyInfo = keyInfos.get(k.key.guid)
-                    if (false === keyInfo?.capsules.has(capsule.differentiator)) {
+                    if (false === keyInfo?.capsules?.has(capsule.differentiator)) {
                         keyInfo.capsules.set(capsule.differentiator, k.count)
-                        keyInfo.totalCount += k.count
+                        keyInfo.total += k.count
 
                         keyInfos.set(k.key.guid, keyInfo)
                     }
                 } else {
                     keyInfo = {
-                        totalCount: 0,
-                        atHand: 0,
+                        total: 0,
                         capsules: new Map<string, number>(),
                     }
 
-                    keyInfo.capsules.set(capsule.differentiator, k.count)
-                    keyInfo.totalCount += k.count
+                    keyInfo.capsules?.set(capsule.differentiator, k.count)
+                    keyInfo.total += k.count
 
                     keyInfos.set(k.key.guid, keyInfo)
                 }
@@ -206,6 +205,7 @@ export class InventoryHelper {
             items = response.result
 
         } else {
+            // todo REMOVE TEST DATA
             // eslint-disable-next-line @typescript-eslint/no-require-imports
             const json = require('../testfiles/example.json')
 

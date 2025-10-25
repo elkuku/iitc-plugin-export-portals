@@ -40,26 +40,27 @@ export namespace Inventory {
 }
 
 export interface KeyInfo {
-    totalCount: number,
-    atHand: number,
-    capsules: Map<string, number>
+    total: number,
+    atHand?: number,
+    capsules?: Map<string, number>
 }
 
 export interface ExportObject {
     guid: string,
-    title: string,
-    lat: number,
-    lng: number,
-    level: number,
-    team: string,
-    health: number,
-    resCount: number,
-    timestamp: number,
-    keyInfo?: KeyInfo
+    title?: string,
+    lat?: number,
+    lng?: number,
+    level?: number,
+    team?: string,
+    health?: number,
+    resCount?: number,
+    timestamp?: number,
+    keys?: number,
+    keyInfo?: KeyInfo,
 }
 
 export interface ExportOptions {
     selectionMode: string,
     format: string,
-    exportUserData: boolean,
+    fieldOptions: string[]
 }

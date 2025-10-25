@@ -5,12 +5,14 @@ import {ExportHelper} from './ExportHelper'
 
 import './types/Types.ts'
 
+import {ExportOptions} from "./types/Types"
+
 const PLUGIN_NAME = 'ExportPortals'
 
 class ExportPortals implements Plugin.Class {
 
     private selectionMode: string
-    private exportFormat = 'json'
+    private exportFormat: string = 'json'
 
     private dialogHelper: DialogHelper
     private exportHelper: ExportHelper
@@ -23,7 +25,7 @@ class ExportPortals implements Plugin.Class {
         // eslint-disable-next-line @typescript-eslint/no-require-imports
         require('./styles.css')
 
-        this.dialogHelper = new DialogHelper()
+        this.dialogHelper = new DialogHelper(PLUGIN_NAME)
         this.exportHelper = new ExportHelper()
 
         this.createButtons()
@@ -62,19 +64,20 @@ class ExportPortals implements Plugin.Class {
             return
         }
 
-        const exportUserData = true
         let exportString: string
 
+        const exportOptions: ExportOptions = {
+            selectionMode: this.selectionMode,
+            format: this.exportFormat,
+            fieldOptions: this.dialogHelper.findFieldOptions(),
+        }
+
         try {
-            exportString = await this.exportHelper.exportPortals({
-                selectionMode: this.selectionMode,
-                format: this.exportFormat,
-                exportUserData: exportUserData,
-            })
+            exportString = await this.exportHelper.exportPortals(exportOptions)
         } catch (error) {
-            // todo some status container
             console.error(error)
-            exportString = error.message
+
+            exportString = error.message // todo some status container
         }
 
         const output = document.getElementById(PLUGIN_NAME + 'Output') as HTMLFormElement
